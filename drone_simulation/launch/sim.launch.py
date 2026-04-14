@@ -3,20 +3,27 @@ from launch.actions import ExecuteProcess, TimerAction
 from launch_ros.actions import Node
 import os
 from ament_index_python.packages import get_package_share_directory
-
+from launch.actions import ExecuteProcess, TimerAction, SetEnvironmentVariable
 
 def generate_launch_description():
 
-    # Start Gazebo with the drone world
+    pkg_name = 'drone_simulation'
+    pkg_share = get_package_share_directory(pkg_name)
+
+    models_dir = os.path.join(pkg_share, 'models')
+    set_model_path = SetEnvironmentVariable(
+        name='GZ_SIM_RESOURCE_PATH',
+        value=models_dir
+    )
+
     gazebo = ExecuteProcess(
         cmd=[
             "gz", "sim", "-v", "4",
-            os.path.join(get_package_share_directory('drone_simulation'), "models/drone_world.sdf")
+            os.path.join(pkg_share, "worlds", "drone_world.sdf")
         ],
         output="screen"
     )
 
-    # ROS-Gazebo bridge (delayed 3s to let Gazebo fully start)
     ros_gz_bridge = TimerAction(
         period=3.0,
         actions=[
@@ -34,6 +41,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        set_model_path,
         gazebo,
         ros_gz_bridge,
     ])
