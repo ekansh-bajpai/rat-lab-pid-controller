@@ -34,6 +34,7 @@ def generate_launch_description():
                 output="screen",
                 arguments=[
                     "/X3/gazebo/command/motor_speed@actuator_msgs/msg/Actuators@gz.msgs.Actuators",
+                    "/X3/gazebo/command/twist@geometry_msgs/msg/Twist@gz.msgs.Twist",
                     "/world/quadcopter/pose/info@geometry_msgs/msg/PoseArray@gz.msgs.Pose_V"
                 ]
             )
